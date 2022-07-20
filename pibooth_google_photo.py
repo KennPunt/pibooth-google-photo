@@ -195,13 +195,14 @@ class GooglePhotosApi(object):
         """Return the album ID if exists else None."""
         if album_id in self._albums_cache:
             return self._albums_cache[album_id]["id"]
-
+        LOGGER.info("!!! ALBUM IS NOT IN CACHE !!! %s", album_id)
         for album in self.get_albums(True):
             id = album["id"]
             self._albums_cache[id] = album
             if id == album_id:
                 LOGGER.info("Found existing Google Photos album '%s'", album_id)
                 return album["id"]
+        LOGGER.info("!!! ALBUM ID NOT FOUND !!! %s", album_id)
         return None
 
     def create_album(self, album_name):
@@ -282,7 +283,7 @@ class GooglePhotosApi(object):
                                  os.path.basename(filename), status["message"])
                 else:
                     LOGGER.info("Google Photos upload successful: '%s' added to album '%s'",
-                                os.path.basename(filename), album_name)
+                                os.path.basename(filename), album_id)
 
                     photo_id = resp["newMediaItemResults"][0]['mediaItem']['id']
             else:
