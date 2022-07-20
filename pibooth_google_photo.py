@@ -242,9 +242,9 @@ class GooglePhotosApi(object):
         album_id = self.get_album_by_id(config_album_id)
         # album_id = self.get_album_id(album_name)
         if not album_id:
-            album_id = self.create_album(album_name)
+            album_id = self.create_album("Unknown")
         if not album_id:
-            LOGGER.error("Google Photos upload failure: album '%s' not found!", album_name)
+            LOGGER.error("Google Photos upload failure: album '%s' not found!", "Unknown")
             return photo_id
 
         self._session.headers["Content-type"] = "application/octet-stream"
