@@ -67,10 +67,11 @@ def state_processing_exit(app, cfg):
     """Upload picture to google photo album"""
     if hasattr(app, 'google_photos'):
         album = cfg.get(SECTION, 'album_name')
-        album_id = cfg.get(SECTION, 'album_id')
-        if(album_id):
+        try:
+            album_id = cfg.get(SECTION, 'album_id')
             album = album_id
-        photo_id = app.google_photos.upload(app.previous_picture_file, album)
+        except:
+            photo_id = app.google_photos.upload(app.previous_picture_file, album)
 
         if photo_id is not None:
             app.previous_picture_url = app.google_photos.get_temp_url(photo_id)
