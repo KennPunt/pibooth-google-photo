@@ -67,7 +67,7 @@ def state_processing_exit(app, cfg):
     """Upload picture to google photo album"""
     if hasattr(app, 'google_photos'):
         photo_id = app.google_photos.upload(app.previous_picture_file,
-                                            cfg.get(SECTION, 'album_name'))
+                                            cfg.get(SECTION, 'album_id'))
 
         if photo_id is not None:
             app.previous_picture_url = app.google_photos.get_temp_url(photo_id)
@@ -189,6 +189,19 @@ class GooglePhotosApi(object):
                 LOGGER.info("Found existing Google Photos album '%s'", album_name)
                 return album["id"]
         return None
+    
+    def get_album_by_id(self, album_id):
+        """Return the album ID if exists else None."""
+        if album_id in self._albums_cache:
+            return self._albums_cache[album_id]["id"]
+
+        for album in self.get_albums(True):
+            id = album["id"]
+            self._albums_cache[id] = album
+            if id == album_id
+                LOGGER.info("Found existing Google Photos album '%s'", album_id)
+                return album["id"]
+        return None
 
     def create_album(self, album_name):
         """Create a new album and return its ID."""
@@ -204,7 +217,7 @@ class GooglePhotosApi(object):
         LOGGER.error("Can not create Google Photos album '%s'", album_name)
         return None
 
-    def upload(self, filename, album_name):
+    def upload(self, filename, config_album_id):
         """Upload a photo file to the given Google Photos album.
 
         :param filename: photo file full path
@@ -225,7 +238,8 @@ class GooglePhotosApi(object):
             # Plugin was disabled at startup but activated after
             self._session = self._get_authorized_session()
 
-        album_id = self.get_album_id(album_name)
+        album_id = self.get_album_by_id(config_album_id)
+        # album_id = self.get_album_id(album_name)
         if not album_id:
             album_id = self.create_album(album_name)
         if not album_id:
