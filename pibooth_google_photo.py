@@ -198,7 +198,7 @@ class GooglePhotosApi(object):
         for album in self.get_albums(True):
             id = album["id"]
             self._albums_cache[id] = album
-            if id == album_id
+            if id == album_id:
                 LOGGER.info("Found existing Google Photos album '%s'", album_id)
                 return album["id"]
         return None
