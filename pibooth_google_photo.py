@@ -66,9 +66,13 @@ def pibooth_startup(app, cfg):
 def state_processing_exit(app, cfg):
     """Upload picture to google photo album"""
     if hasattr(app, 'google_photos'):
-        
-        album_id = cfg.get(SECTION, 'album_id')
-        photo_id = app.google_photos.upload(app.previous_picture_file, album_id)
+        album_id = False
+        try:
+            album_id = cfg.get(SECTION, 'album_id')
+        except:
+            album_id = False
+        album_name = cfg.get(SECTION, 'album_name')
+        photo_id = app.google_photos.upload(app.previous_picture_file, album_id, album_name)
 
         if photo_id is not None:
             app.previous_picture_url = app.google_photos.get_temp_url(photo_id)
@@ -220,7 +224,7 @@ class GooglePhotosApi(object):
         LOGGER.error("Can not create Google Photos album '%s'", album_name)
         return None
 
-    def upload(self, filename, config_album_id):
+    def upload(self, filename, config_album_id, config_album_name):
         """Upload a photo file to the given Google Photos album.
 
         :param filename: photo file full path
@@ -241,12 +245,16 @@ class GooglePhotosApi(object):
             # Plugin was disabled at startup but activated after
             self._session = self._get_authorized_session()
 
-        album_id = self.get_album_by_id(config_album_id)
-        # album_id = self.get_album_id(album_name)
+        album_id = False
+        if(config_album_id):
+            album_id = self.get_album_by_id(config_album_id)
+        else:
+            album_id = self.get_album_id(config_album_name)
+        
         if not album_id:
-            album_id = self.create_album("Unknown")
+            album_id = self.create_album(config_album_name)
         if not album_id:
-            LOGGER.error("Google Photos upload failure: album '%s' not found!", "Unknown")
+            LOGGER.error("Google Photos upload failure: album '%s' not found!", config_album_name)
             return photo_id
 
         self._session.headers["Content-type"] = "application/octet-stream"
