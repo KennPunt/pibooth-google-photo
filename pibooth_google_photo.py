@@ -125,7 +125,7 @@ class GooglePhotosApi(object):
         try:
             with open(self.token_cache_file, 'w') as fp:
                 fp.write(credentials.to_json())
-        except OSError as err:
+        except OSError as err: 
             LOGGER.warning("Can not save Google Photos token in file '%s': %s",
                            self.token_cache_file, err)
 
@@ -193,7 +193,7 @@ class GooglePhotosApi(object):
         if album_name.lower() in self._albums_cache:
             return self._albums_cache[album_name.lower()]["id"]
 
-        for album in self.get_albums(Logg):
+        for album in self.get_albums(False):
             title = album["title"].lower()
             self._albums_cache[title] = album
             if title == album_name.lower():
@@ -254,7 +254,7 @@ class GooglePhotosApi(object):
 
         album_id = False
         if(config_album_id):
-            album_id = self.get_album_by_id(config_album_id)
+            album_id = config_album_id #self.get_album_by_id(config_album_id)
         else:
             album_id = self.get_album_id(config_album_name)
         
