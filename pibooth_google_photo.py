@@ -44,6 +44,7 @@ def pibooth_configure(cfg):
 #        os.remove(cfg.join_path(CACHE_FILE))
 
 
+## TODO check if credentials get removed when startup??
 @pibooth.hookimpl
 def pibooth_startup(app, cfg):
     """Create the GooglePhotosUpload instance."""
@@ -59,7 +60,7 @@ def pibooth_startup(app, cfg):
         LOGGER.error("Empty file [%s][client_id_file]='%s', please check config",
                      SECTION, client_id_file)
     else:
-        LOGGER.info("Initialize Google Photos connection")
+        LOGGER.info("Initialize Google Photos connection, client id file: '%s', cache file:'%s'",client_id_file, cfg.join_path(CACHE_FILE))
         app.google_photos = GooglePhotosApi(client_id_file, cfg.join_path(CACHE_FILE))
 
 
@@ -128,9 +129,10 @@ class GooglePhotosApi(object):
     def _get_authorized_session(self):
         """Create credentials file if required and open a new session."""
         credentials = None
+        LOGGER.info("Get_authorized_session: client id file '%s', cache file:'%s'",self.client_id_file, self.token_cache_file)
         if not os.path.exists(self.token_cache_file) or \
                 os.path.getsize(self.token_cache_file) == 0:
-            LOGGER.debug("First use of plugin, store token in file '%s'",
+            LOGGER.debug("First use of plugin, store token in file '%s'", #### TODO WHY FIRST USE OF PLUGIN???
                          self.token_cache_file)
             credentials = self._auth()
             self._save_credentials(credentials)
@@ -188,12 +190,13 @@ class GooglePhotosApi(object):
         if album_name.lower() in self._albums_cache:
             return self._albums_cache[album_name.lower()]["id"]
 
-        for album in self.get_albums(False):
+        for album in self.get_albums(Logg):
             title = album["title"].lower()
             self._albums_cache[title] = album
             if title == album_name.lower():
                 LOGGER.info("Found existing Google Photos album '%s'", album_name)
                 return album["id"]
+            LOGGER.info("!!! album '%s' not found", album_name)
         return None
     
     def get_album_by_id(self, album_id):
