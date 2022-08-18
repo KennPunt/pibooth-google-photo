@@ -114,6 +114,7 @@ class GooglePhotosApi(object):
 
     def _auth(self):
         """Open browser to create credentials."""
+        self._window.toggle_fullscreen() # TODO
         flow = InstalledAppFlow.from_client_secrets_file(self.client_id_file, scopes=self.SCOPES)
         return flow.run_local_server(port=0)
 
