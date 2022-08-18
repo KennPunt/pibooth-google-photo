@@ -35,12 +35,13 @@ def pibooth_configure(cfg):
                    "Credentials file downloaded from Google API")
 
 
-@pibooth.hookimpl
-def pibooth_reset(cfg, hard):
-    """Remove cached token file."""
-    if hard and os.path.isfile(cfg.join_path(CACHE_FILE)):
-        LOGGER.info("Remove Google Photos autorizations '%s'", cfg.join_path(CACHE_FILE))
-        os.remove(cfg.join_path(CACHE_FILE))
+# stop removing token
+#@pibooth.hookimpl
+#def pibooth_reset(cfg, hard):
+#    """Remove cached token file."""
+#    if hard and os.path.isfile(cfg.join_path(CACHE_FILE)):
+#        LOGGER.info("Remove Google Photos autorizations '%s'", cfg.join_path(CACHE_FILE))
+#        os.remove(cfg.join_path(CACHE_FILE))
 
 
 @pibooth.hookimpl
