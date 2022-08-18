@@ -22,7 +22,7 @@ from pibooth.utils import LOGGER
 __version__ = "1.2.3"
 
 SECTION = 'GOOGLE'
-CACHE_FILE = '.google_token.json'
+CACHE_FILE = '/home/pi/Desktop/.google_token.json'
 
 
 @pibooth.hookimpl
@@ -60,8 +60,8 @@ def pibooth_startup(app, cfg):
         LOGGER.error("Empty file [%s][client_id_file]='%s', please check config",
                      SECTION, client_id_file)
     else:
-        LOGGER.info("Initialize Google Photos connection, client id file: '%s', cache file:'%s'",client_id_file, cfg.join_path(CACHE_FILE))
-        app.google_photos = GooglePhotosApi(client_id_file, cfg.join_path(CACHE_FILE))
+        LOGGER.info("Initialize Google Photos connection, client id file: '%s', cache file:'%s'",client_id_file,CACHE_FILE)
+        app.google_photos = GooglePhotosApi(client_id_file, CACHE_FILE)
 
 
 @pibooth.hookimpl
