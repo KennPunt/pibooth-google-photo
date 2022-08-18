@@ -22,7 +22,7 @@ from pibooth.utils import LOGGER
 __version__ = "1.2.3"
 
 SECTION = 'GOOGLE'
-CACHE_FILE = '/home/pi/Desktop/.google_token.json'
+CACHE_FILE = '/home/pi/Desktop/googlephotos_token.json'
 
 
 @pibooth.hookimpl
