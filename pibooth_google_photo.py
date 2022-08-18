@@ -188,7 +188,7 @@ class GooglePhotosApi(object):
         if album_name.lower() in self._albums_cache:
             return self._albums_cache[album_name.lower()]["id"]
 
-        for album in self.get_albums(True):
+        for album in self.get_albums(False):
             title = album["title"].lower()
             self._albums_cache[title] = album
             if title == album_name.lower():
@@ -201,7 +201,7 @@ class GooglePhotosApi(object):
         if album_id in self._albums_cache:
             return self._albums_cache[album_id]["id"]
         LOGGER.info("!!! ALBUM IS NOT IN CACHE !!! %s", album_id)
-        for album in self.get_albums(True):
+        for album in self.get_albums(False):
             id = album["id"]
             self._albums_cache[id] = album
             LOGGER.info("Listing album '%s'", id)
